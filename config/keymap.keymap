@@ -18,7 +18,7 @@
             bindings = <&kp ESC>;
             key-positions = <52 58>;
         };
-
+    };
     keymap {
         compatible = "zmk,keymap";
 
