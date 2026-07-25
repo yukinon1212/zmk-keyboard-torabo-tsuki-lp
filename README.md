@@ -8,15 +8,11 @@
 
 ### 1. ビルドする（GitHub Actions による自動ビルド）
 
-このリポジトリは GitHub Actions で自動ビルドされます。keymap-editor や GitHub 上で `config/keymap.keymap` などのファイルを編集してコミット（master ブランチに push）すると、ビルドが自動で開始します。手動で実行したい場合は、リポジトリの「Actions」タブから「Build」ワークフローを選び「Run workflow」を押してください。
+このリポジトリは GitHub Actions で自動ビルドされます。keymap-editor や GitHub 上で `config/keymap.keymap` などのファイルを編集してコミット（master ブランチに push）すると、ビルドが自動で開始します。手動で実行したい場合は、リポジトリの Actions タブから Build ワークフローを選び Run workflow を押してください。
 
 ### 2. uf2 ファイルをダウンロードする
 
-「Actions」タブを開き、一番上の（最新の）ビルドをクリックします。ビルドが成功（緑のチェック）していることを確認したら、ページ下部の「Artifacts」欄にある `firmware` をクリックして zip をダウンロードし、展開します。zip の中には次の uf2 が含まれます。
-
-- `torabo_tsuki_lp_right_central` … トラックボールがある右側（Central）用
-- `torabo_tsuki_lp_left_peripheral` … 左側（Peripheral）用
-- `settings_reset` … 設定初期化用（ペアリング情報が壊れたとき等に使用）
+Actions タブを開き、一番上の（最新の）ビルドをクリックします。ビルドが成功（緑のチェック）していることを確認したら、ページ下部の Artifacts 欄にある firmware をクリックして zip をダウンロードし、展開します。zip の中には次の uf2 が含まれます。`torabo_tsuki_lp_right_central` はトラックボールがある右側（Central）用、`torabo_tsuki_lp_left_peripheral` は左側（Peripheral）用、`settings_reset` は設定初期化用（ペアリング情報が壊れたとき等に使用）です。
 
 ### 3. キーボードに書き込む
 
@@ -26,10 +22,7 @@
 
 ## キーマップの主な機能
 
-- スクロール：スクロールレイヤー（レイヤー3）でトラックボールがスクロールになります。左右方向は反転済みです。
-- トラックボール感度：右側 overlay の `zip_xy_scaler` で調整しています。
-- Bluetooth 切り替え：レイヤー3 の右上に `BT_SEL 0/1/2`（プロファイル 1/2/3 切替）と `BT_CLR`（現在のプロファイルのペアリング解除）を配置しています。
-- Esc：左 Control とレイヤー1（数字入力レイヤー）キーの同時押しで Esc になります（コンボ）。
+スクロールは、スクロールレイヤー（レイヤー3）でトラックボールがスクロールになります（左右方向は反転済み）。トラックボール感度は右側 overlay の `zip_xy_scaler` で調整しています。Bluetooth 切り替えは、レイヤー3 の右上に `BT_SEL 0/1/2`（プロファイル 1/2/3 切替）と `BT_CLR`（現在のプロファイルのペアリング解除）を配置しています。Esc は、左 Control とレイヤー1（数字入力レイヤー）キーの同時押しで入力できます（コンボ）。
 
 ## キーマップの編集方法
 
