@@ -13,7 +13,11 @@
             key-positions = <28 29>;
             layers = <2>;
         };
-    };
+
+        esc_combo {
+            bindings = <&kp ESC>;
+            key-positions = <52 58>;
+        };
 
     keymap {
         compatible = "zmk,keymap";
