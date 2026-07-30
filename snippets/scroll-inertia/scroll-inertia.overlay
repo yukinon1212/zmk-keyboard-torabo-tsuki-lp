@@ -1,0 +1,69 @@
+/*
+ * 慣性スクロール（レイヤー3）
+ *
+ * zmk-input-processor-scroll-inertia を使って、レイヤー3 のスクロールに
+ * iOS 風の惰性（フリックして離した後もゆっくり減衰しながらスクロールが続く）
+ * を追加する。
+ *   https://github.com/mjmjm0101/zmk-input-processor-scroll-inertia
+ *
+ * このプロセッサは ZMK のマウス HID API を叩くため central 側でしかビルド
+ * できず、peripheral ビルドに DT ノードが入るとコンパイルエラーになる。
+ * そのため shield の overlay（左右 peripheral と共用）ではなく、
+ * build.yaml で central ビルドにだけ足す snippet として実装している。
+ *
+ * scroller の input-processors は torabo_tsuki_lp_right.overlay で定義した
+ * ものを上書きする（ZMK の override ノードは「置き換え」なので、元のチェーン
+ * をそのまま書き直したうえで末尾に慣性プロセッサを足している）。
+ * 元のチェーンを変更したときはこちらも合わせて直すこと。
+ */
+
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    scroll_inertia: scroll_inertia {
+        compatible = "zmk,input-processor-scroll-inertia";
+        #input-processor-cells = <0>;
+
+        /* 0 = 両軸（斜めスクロール可・従来どおり）, 1 = 縦のみ, 2 = 横のみ */
+        axis = <0>;
+
+        /* スクロールレイヤー。レイヤーを抜けた瞬間に内部状態をリセットさせる */
+        layer = <3>;
+
+        /*
+         * 出力倍率。後段に zip_scroll_scaler を置いていないのでチェーン末尾
+         * 配置となり、等倍（1000/1000）が正しい。物理スクロール中の速度と
+         * 慣性の速度が一致し、指を離した瞬間の継ぎ目がなくなる。
+         */
+        scale = <1000>;
+        scale-div = <1000>;
+
+        /*
+         * 慣性を打ち切る速度。等倍出力なので 1 が推奨値
+         * （出力周波数 = stop × scale × 125 / scale-div ≒ 125 units/s）。
+         * 下げるほど尻尾は伸びるが、カクついて見えやすくなる。
+         */
+        stop = <1>;
+
+        /*
+         * ここから下はモジュールのデフォルト値のままなので記述していない。
+         * 感触を調整したいときに足す主なプロパティ:
+         *   start    = <40>;  慣性が発動する最低フリック速度。誤発動するなら上げる
+         *   move     = <80>;  発動に必要な累積移動量。同上
+         *   decay-fast/slow/tail = <990>;  減衰率（千分率）。小さくすると早く止まる
+         *   friction = <35>;  一定減速。上げると小さいフリックがすぐ止まる
+         *   limit    = <600>; 速度上限（暴走防止）
+         *   span     = <6000>; 慣性の最大継続時間 ms（暴走防止）
+         *   swap-mod / unlock-mod  修飾キーで軸を入れ替え／両軸フリーにする
+         */
+    };
+};
+
+&pointing_listener {
+    scroller {
+        layers = <3>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>,
+                           <&zip_xy_to_scroll_mapper>,
+                           <&scroll_inertia>;
+    };
+};

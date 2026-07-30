@@ -4,6 +4,12 @@
 
 &pointing_listener {
     input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>, <&zip_xy_scaler 3 4>;
+    /*
+     * central ビルドでは scroll-inertia snippet がこの scroller の
+     * input-processors を上書きし、末尾に慣性プロセッサを足す。
+     * チェーンを変更するときは snippets/scroll-inertia/scroll-inertia.overlay
+     * も合わせて直すこと。
+     */
     scroller {
         layers = <3>;
         input-processors = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>, <&zip_xy_to_scroll_mapper>;

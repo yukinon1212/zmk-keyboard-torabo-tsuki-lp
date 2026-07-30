@@ -22,7 +22,17 @@ Actions タブを開き、一番上の（最新の）ビルドをクリックし
 
 ## キーマップの主な機能
 
-スクロールは、スクロールレイヤー（レイヤー3）でトラックボールがスクロールになります（左右方向は反転済み）。トラックボール感度は右側 overlay の `zip_xy_scaler` で調整しています。Bluetooth 切り替えは、レイヤー3 の右上に `BT_SEL 0/1/2`（プロファイル 1/2/3 切替）と `BT_CLR`（現在のプロファイルのペアリング解除）を配置しています。Esc は、左 Control とレイヤー1（数字入力レイヤー）キーの同時押しで入力できます（コンボ）。
+スクロールは、スクロールレイヤー（レイヤー3）でトラックボールがスクロールになります（左右方向は反転済み）。スクロールには慣性（惰性スクロール）がついていて、ボールを弾いて手を離すと iOS のようにゆっくり減衰しながらスクロールが続きます。トラックボール感度は右側 overlay の `zip_xy_scaler` で調整しています。Bluetooth 切り替えは、レイヤー3 の右上に `BT_SEL 0/1/2`（プロファイル 1/2/3 切替）と `BT_CLR`（現在のプロファイルのペアリング解除）を配置しています。Esc は、左 Control とレイヤー1（数字入力レイヤー）キーの同時押しで入力できます（コンボ）。
+
+## 慣性スクロールの調整
+
+慣性スクロールは [zmk-input-processor-scroll-inertia](https://github.com/mjmjm0101/zmk-input-processor-scroll-inertia) で実装しています。設定は `snippets/scroll-inertia/scroll-inertia.overlay` にあり、感触の調整はこのファイルの `scroll_inertia` ノードにプロパティを足して行います。よく使うのは次の3つです。
+
+- **慣性が長すぎる / いつまでも滑る** → `decay-fast` / `decay-slow` / `decay-tail` を `990` から `980` 程度に下げる（3つとも同じ値にすると単一カーブ）。または `friction` を `35` から `100` 程度に上げる。
+- **弾いていないのに慣性が発動する** → `start`（既定 `40`）と `move`（既定 `80`）を上げる。
+- **弱く弾いたときに慣性が乗らない** → `start` を下げる。
+
+なお慣性プロセッサは ZMK のマウス HID を扱うため central 側でしかビルドできません。そのため shield の overlay ではなく、`build.yaml` の central ビルドにだけ付ける `scroll-inertia` snippet として組み込んでいます。左手側にトラックボールがある構成（`_left_central`）で慣性を使う場合は、`torabo_tsuki_lp_left.overlay` にスクロールレイヤー用の `scroller` ノードを追加したうえで、`build.yaml` の該当ビルドに `scroll-inertia` を足してください。
 
 ## キーマップの編集方法
 
