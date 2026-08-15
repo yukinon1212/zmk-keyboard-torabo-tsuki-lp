@@ -16,6 +16,24 @@
 
 &lt { quick-tap-ms = <200>; };
 
+/*
+ * 日本語配列（JIS）で「~」を入力するための設定。
+ *
+ * ZMK のキーコードは US 配列基準の HID コードなので、OS 側が JIS 配列だと
+ * 記号の対応がずれる。
+ *   &kp TILDE  = Shift + HID 0x35（US の ` / ~ キー）
+ *                → JIS では「半角/全角」キーなので何も入力されない
+ *   &kp TILDE2 = Shift + HID 0x32（Non-US #）
+ *                → JIS では「}」になる
+ *   &kp LS(EQUAL) = Shift + HID 0x2E
+ *                → JIS の「^」キー + Shift = 「~」  ← これが正解
+ *
+ * 同じ理由で JIS では以下も読み替えが必要:
+ *   ` (バッククォート) = &kp LS(LBKT)   @ = &kp LBKT
+ *   | (パイプ)         = &kp LS(INT_YEN)
+ *   " (ダブルクォート) = &kp LS(N2)     ' = &kp LS(N7)
+ */
+
 / {
     combos {
         compatible = "zmk,combos";
@@ -47,11 +65,11 @@
 
         layer_1 {
             bindings = <
-&trans  &trans      &trans               &trans            &trans            &trans                                 &trans  &trans     &trans      &trans    &trans         &trans
-&trans  &kp N1      &kp N2               &kp N3            &kp N4            &kp N5                                 &kp N6  &kp N7     &kp N8      &kp N9    &kp N0         &trans
-&trans  &kp TAB     &kp SEMICOLON        &kp SINGLE_QUOTE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp TILDE   &trans  &trans  &mkp LCLK  &kp INSERT  &kp HOME  &kp PAGE_UP    &trans
-&trans  &kp DELETE  &kp COMMA            &kp DOT           &kp FSLH          &kp BACKSLASH      &kp TILDE2  &trans  &trans  &trans     &trans      &kp END   &kp PAGE_DOWN  &trans
-&trans  &kp ESCAPE  &kp INTERNATIONAL_1  &kp INT_YEN       &trans            &trans             &trans      &trans  &trans  &trans     &trans      &trans    &trans         &trans
+&trans  &trans      &trans               &trans            &trans            &trans                                    &trans  &trans     &trans      &trans    &trans         &trans
+&trans  &kp N1      &kp N2               &kp N3            &kp N4            &kp N5                                    &kp N6  &kp N7     &kp N8      &kp N9    &kp N0         &trans
+&trans  &kp TAB     &kp SEMICOLON        &kp SINGLE_QUOTE  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans         &trans  &trans  &mkp LCLK  &kp INSERT  &kp HOME  &kp PAGE_UP    &trans
+&trans  &kp DELETE  &kp COMMA            &kp DOT           &kp FSLH          &kp BACKSLASH      &kp LS(EQUAL)  &trans  &trans  &trans     &trans      &kp END   &kp PAGE_DOWN  &trans
+&trans  &kp ESCAPE  &kp INTERNATIONAL_1  &kp INT_YEN       &trans            &trans             &trans         &trans  &trans  &trans     &trans      &trans    &trans         &trans
             >;
         };
 
@@ -67,11 +85,11 @@
 
         layer_3 {
             bindings = <
-&trans  &trans   &trans   &trans  &trans      &trans                   &bt BT_SEL 0      &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR    &trans      &trans
-&trans  &kp F1   &kp F2   &kp F3  &kp F4      &kp F5                   &bt BT_SEL 0      &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR  &trans
-&trans  &kp F6   &kp F7   &kp F8  &kp F9      &kp F10  &trans  &trans  &kp LEFT          &kp DOWN      &kp UP_ARROW  &kp RIGHT     &kp TAB     &trans
-&trans  &kp F11  &kp F12  &trans  &trans      &trans   &trans  &trans  &kp SINGLE_QUOTE  &kp DQT       &kp GRAVE     &kp TILDE     &kp PIPE    &trans
-&trans  &trans   &trans   &trans  &kp DELETE  &kp TAB  &trans  &trans  &trans            &trans        &trans        &trans        &trans      &trans
+&trans  &trans   &trans   &trans  &trans      &trans                   &bt BT_SEL 0      &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR     &trans      &trans
+&trans  &kp F1   &kp F2   &kp F3  &kp F4      &kp F5                   &bt BT_SEL 0      &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3   &bt BT_CLR  &trans
+&trans  &kp F6   &kp F7   &kp F8  &kp F9      &kp F10  &trans  &trans  &kp LEFT          &kp DOWN      &kp UP_ARROW  &kp RIGHT      &kp TAB     &trans
+&trans  &kp F11  &kp F12  &trans  &trans      &trans   &trans  &trans  &kp SINGLE_QUOTE  &kp DQT       &kp GRAVE     &kp LS(EQUAL)  &kp PIPE    &trans
+&trans  &trans   &trans   &trans  &kp DELETE  &kp TAB  &trans  &trans  &trans            &trans        &trans        &trans         &trans      &trans
             >;
         };
     };
